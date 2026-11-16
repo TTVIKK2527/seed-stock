@@ -23,3 +23,4 @@ class Reservation(Base):
     quantity: Mapped[int] = mapped_column(Integer)
     status: Mapped[str] = mapped_column(String)
     created_at: Mapped[str] = mapped_column(String)
+    cancelled_at: Mapped[str | None] = mapped_column(String, nullable=True)

@@ -11,13 +11,21 @@ def seed_data(seed):
 
 
 def reservation_data(reservation):
-    return {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
+    data = {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
             "status": reservation.status, "createdAt": reservation.created_at}
+    if reservation.cancelled_at is not None: data["cancelledAt"] = reservation.cancelled_at
+    return data
 
 
 def validate_quantity(quantity, positive=False):
     if type(quantity) is not int or quantity < (1 if positive else 0):
         raise ValueError("Kogus peab olema " + ("positiivne" if positive else "mittenegatiivne") + " täisarv.")
+
+
+def require_record(session, model, key, message):
+    record = session.get(model, key)
+    if record is None: raise ValueError(message)
+    return record
 
 
 class StockService:
@@ -47,7 +55,7 @@ class StockService:
         validate_quantity(quantity, positive=True)
         try:
             with Session(self.engine, expire_on_commit=False) as session, session.begin():
-                if session.get(Seed, seed_id) is None: raise ValueError("Seemet ei leitud.")
+                require_record(session, Seed, seed_id, "Seemet ei leitud.")
                 result = session.execute(update(Seed).where(Seed.id == seed_id, Seed.quantity >= quantity)
                                          .values(quantity=Seed.quantity - quantity))
                 if result.rowcount != 1: raise ValueError("Seemneid ei piisa.")
@@ -62,3 +70,14 @@ class StockService:
         with Session(self.engine) as session:
             return [reservation_data(r)
                     for r in session.scalars(select(Reservation).order_by(Reservation.created_at, Reservation.id))]
+
+    def cancel(self, reservation_id):
+        with Session(self.engine, expire_on_commit=False) as session, session.begin():
+            reservation = require_record(session, Reservation, reservation_id, "Broneeringut ei leitud.")
+            now = self.clock()
+            result = session.execute(update(Reservation).where(Reservation.id == reservation_id, Reservation.status == "active")
+                                     .values(status="cancelled", cancelled_at=now))
+            if result.rowcount != 1: raise ValueError("Broneering on juba tühistatud.")
+            session.execute(update(Seed).where(Seed.id == reservation.seed_id).values(quantity=Seed.quantity + reservation.quantity))
+            session.refresh(reservation)
+        return reservation_data(reservation)
