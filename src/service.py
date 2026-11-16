@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from uuid import uuid4
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from .models import Seed
+from .models import Seed, Reservation
 
 
 def seed_data(seed):
@@ -37,3 +37,24 @@ class StockService:
         with Session(self.engine) as session:
             return [seed_data(seed)
                     for seed in session.scalars(select(Seed).order_by(Seed.name_key, Seed.id))]
+
+    def reserve(self, seed_id, quantity):
+        validate_quantity(quantity, positive=True)
+        try:
+            with Session(self.engine, expire_on_commit=False) as session, session.begin():
+                if session.get(Seed, seed_id) is None: raise ValueError("Seemet ei leitud.")
+                result = session.execute(update(Seed).where(Seed.id == seed_id, Seed.quantity >= quantity)
+                                         .values(quantity=Seed.quantity - quantity))
+                if result.rowcount != 1: raise ValueError("Seemneid ei piisa.")
+                reservation = Reservation(id=self.id_provider(), seed_id=seed_id, quantity=quantity, status="active", created_at=self.clock())
+                session.add(reservation)
+                session.flush()
+        except IntegrityError as error:
+            raise ValueError("Broneeringu salvestamine ebaõnnestus.") from error
+        return {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
+                "status": reservation.status, "createdAt": reservation.created_at}
+
+    def list_reservations(self):
+        with Session(self.engine) as session:
+            return [{"id": r.id, "seedId": r.seed_id, "quantity": r.quantity, "status": r.status, "createdAt": r.created_at}
+                    for r in session.scalars(select(Reservation).order_by(Reservation.created_at, Reservation.id))]
