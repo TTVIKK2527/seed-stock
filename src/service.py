@@ -22,6 +22,12 @@ def validate_quantity(quantity, positive=False):
         raise ValueError("Kogus peab olema " + ("positiivne" if positive else "mittenegatiivne") + " täisarv.")
 
 
+def require_record(session, model, key, message):
+    record = session.get(model, key)
+    if record is None: raise ValueError(message)
+    return record
+
+
 class StockService:
     def __init__(self, engine, clock=None, id_provider=None):
         self.engine = engine
@@ -49,7 +55,7 @@ class StockService:
         validate_quantity(quantity, positive=True)
         try:
             with Session(self.engine, expire_on_commit=False) as session, session.begin():
-                if session.get(Seed, seed_id) is None: raise ValueError("Seemet ei leitud.")
+                require_record(session, Seed, seed_id, "Seemet ei leitud.")
                 result = session.execute(update(Seed).where(Seed.id == seed_id, Seed.quantity >= quantity)
                                          .values(quantity=Seed.quantity - quantity))
                 if result.rowcount != 1: raise ValueError("Seemneid ei piisa.")
@@ -67,8 +73,7 @@ class StockService:
 
     def cancel(self, reservation_id):
         with Session(self.engine, expire_on_commit=False) as session, session.begin():
-            reservation = session.get(Reservation, reservation_id)
-            if reservation is None: raise ValueError("Broneeringut ei leitud.")
+            reservation = require_record(session, Reservation, reservation_id, "Broneeringut ei leitud.")
             now = self.clock()
             result = session.execute(update(Reservation).where(Reservation.id == reservation_id, Reservation.status == "active")
                                      .values(status="cancelled", cancelled_at=now))
