@@ -1,0 +1,173 @@
+test_duplicate_name_is_rejected_even_with_different_case (test_register.RegisterTests.test_duplicate_name_is_rejected_even_with_different_case) ... ok
+test_empty_name_rejected (test_register.RegisterTests.test_empty_name_rejected) ... ok
+test_invalid_quantities_rejected (test_register.RegisterTests.test_invalid_quantities_rejected) ... ok
+test_register_stores_name_quantity_and_injected_time (test_register.RegisterTests.test_register_stores_name_quantity_and_injected_time) ... ok
+test_zero_quantity_is_allowed (test_register.RegisterTests.test_zero_quantity_is_allowed) ... ok
+test_database_foreign_key_and_check_constraints (test_reserve.ReserveTests.test_database_foreign_key_and_check_constraints) ... ERROR
+test_failed_insert_rolls_back_stock_decrement (test_reserve.ReserveTests.test_failed_insert_rolls_back_stock_decrement) ... ERROR
+test_insufficient_stock_changes_nothing (test_reserve.ReserveTests.test_insufficient_stock_changes_nothing) ... ERROR
+test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) ... 
+  test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=0) ... ERROR
+  test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=-1) ... ERROR
+  test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=True) ... ERROR
+  test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=1.5) ... ERROR
+test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) ... ERROR
+test_reserve_decrements_stock_and_records_reservation (test_reserve.ReserveTests.test_reserve_decrements_stock_and_records_reservation) ... ERROR
+test_reserve_exact_remaining_stock (test_reserve.ReserveTests.test_reserve_exact_remaining_stock) ... ERROR
+
+======================================================================
+ERROR: test_database_foreign_key_and_check_constraints (test_reserve.ReserveTests.test_database_foreign_key_and_check_constraints)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: reservations
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 50, in test_database_foreign_key_and_check_constraints
+    connection.execute(text("INSERT INTO reservations (id,seed_id,quantity,status,created_at) VALUES ('r','missing',1,'active','now')"))
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/lib/python3.14/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: reservations
+[SQL: INSERT INTO reservations (id,seed_id,quantity,status,created_at) VALUES ('r','missing',1,'active','now')]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+======================================================================
+ERROR: test_failed_insert_rolls_back_stock_decrement (test_reserve.ReserveTests.test_failed_insert_rolls_back_stock_decrement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 41, in test_failed_insert_rolls_back_stock_decrement
+    self.stock.reserve("seed-1", 2)
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_insufficient_stock_changes_nothing (test_reserve.ReserveTests.test_insufficient_stock_changes_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 26, in test_insufficient_stock_changes_nothing
+    with self.assertRaisesRegex(ValueError, "piisa"): self.stock.reserve("seed-1", 11)
+                                                      ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 37, in test_invalid_quantities_and_missing_seed
+    with self.subTest(quantity=quantity), self.assertRaises(ValueError): self.stock.reserve("seed-1", quantity)
+                                                                         ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 37, in test_invalid_quantities_and_missing_seed
+    with self.subTest(quantity=quantity), self.assertRaises(ValueError): self.stock.reserve("seed-1", quantity)
+                                                                         ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 37, in test_invalid_quantities_and_missing_seed
+    with self.subTest(quantity=quantity), self.assertRaises(ValueError): self.stock.reserve("seed-1", quantity)
+                                                                         ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) (quantity=1.5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 37, in test_invalid_quantities_and_missing_seed
+    with self.subTest(quantity=quantity), self.assertRaises(ValueError): self.stock.reserve("seed-1", quantity)
+                                                                         ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 38, in test_invalid_quantities_and_missing_seed
+    with self.assertRaises(ValueError): self.stock.reserve("missing", 1)
+                                        ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_reserve_decrements_stock_and_records_reservation (test_reserve.ReserveTests.test_reserve_decrements_stock_and_records_reservation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 19, in test_reserve_decrements_stock_and_records_reservation
+    result = self.stock.reserve("seed-1", 4)
+             ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+======================================================================
+ERROR: test_reserve_exact_remaining_stock (test_reserve.ReserveTests.test_reserve_exact_remaining_stock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_reserve.py", line 31, in test_reserve_exact_remaining_stock
+    self.stock.reserve("seed-1", 10)
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'reserve'
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.063s
+
+FAILED (errors=10)

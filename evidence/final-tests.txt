@@ -1,0 +1,25 @@
+test_cancel_restores_stock_and_sets_time (test_cancel.CancelTests.test_cancel_restores_stock_and_sets_time) ... ok
+test_double_cancel_never_restores_stock_twice (test_cancel.CancelTests.test_double_cancel_never_restores_stock_twice) ... ok
+test_migrations_and_rows_survive_reopening_database (test_cancel.CancelTests.test_migrations_and_rows_survive_reopening_database) ... ok
+test_missing_reservation_changes_nothing (test_cancel.CancelTests.test_missing_reservation_changes_nothing) ... ok
+test_add_reserve_cancel_complete_workflow (test_mvc.MvcTests.test_add_reserve_cancel_complete_workflow) ... ok
+test_empty_list_is_rendered_by_view (test_mvc.MvcTests.test_empty_list_is_rendered_by_view) ... ok
+test_invalid_input_is_visible_and_does_not_write (test_mvc.MvcTests.test_invalid_input_is_visible_and_does_not_write) ... ok
+test_names_are_html_escaped (test_mvc.MvcTests.test_names_are_html_escaped) ... ok
+test_post_without_csrf_rejected (test_mvc.MvcTests.test_post_without_csrf_rejected) ... ok
+test_duplicate_name_is_rejected_even_with_different_case (test_register.RegisterTests.test_duplicate_name_is_rejected_even_with_different_case) ... ok
+test_empty_name_rejected (test_register.RegisterTests.test_empty_name_rejected) ... ok
+test_invalid_quantities_rejected (test_register.RegisterTests.test_invalid_quantities_rejected) ... ok
+test_register_stores_name_quantity_and_injected_time (test_register.RegisterTests.test_register_stores_name_quantity_and_injected_time) ... ok
+test_zero_quantity_is_allowed (test_register.RegisterTests.test_zero_quantity_is_allowed) ... ok
+test_database_foreign_key_and_check_constraints (test_reserve.ReserveTests.test_database_foreign_key_and_check_constraints) ... ok
+test_failed_insert_rolls_back_stock_decrement (test_reserve.ReserveTests.test_failed_insert_rolls_back_stock_decrement) ... ok
+test_insufficient_stock_changes_nothing (test_reserve.ReserveTests.test_insufficient_stock_changes_nothing) ... ok
+test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) ... ok
+test_reserve_decrements_stock_and_records_reservation (test_reserve.ReserveTests.test_reserve_decrements_stock_and_records_reservation) ... ok
+test_reserve_exact_remaining_stock (test_reserve.ReserveTests.test_reserve_exact_remaining_stock) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.314s
+
+OK

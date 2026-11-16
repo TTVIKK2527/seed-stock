@@ -1,0 +1,56 @@
+test_cancel_restores_stock_and_sets_time (test_cancel.CancelTests.test_cancel_restores_stock_and_sets_time) ... ERROR
+test_double_cancel_never_restores_stock_twice (test_cancel.CancelTests.test_double_cancel_never_restores_stock_twice) ... ERROR
+test_migrations_and_rows_survive_reopening_database (test_cancel.CancelTests.test_migrations_and_rows_survive_reopening_database) ... ERROR
+test_missing_reservation_changes_nothing (test_cancel.CancelTests.test_missing_reservation_changes_nothing) ... ERROR
+test_duplicate_name_is_rejected_even_with_different_case (test_register.RegisterTests.test_duplicate_name_is_rejected_even_with_different_case) ... ok
+test_empty_name_rejected (test_register.RegisterTests.test_empty_name_rejected) ... ok
+test_invalid_quantities_rejected (test_register.RegisterTests.test_invalid_quantities_rejected) ... ok
+test_register_stores_name_quantity_and_injected_time (test_register.RegisterTests.test_register_stores_name_quantity_and_injected_time) ... ok
+test_zero_quantity_is_allowed (test_register.RegisterTests.test_zero_quantity_is_allowed) ... ok
+test_database_foreign_key_and_check_constraints (test_reserve.ReserveTests.test_database_foreign_key_and_check_constraints) ... ok
+test_failed_insert_rolls_back_stock_decrement (test_reserve.ReserveTests.test_failed_insert_rolls_back_stock_decrement) ... ok
+test_insufficient_stock_changes_nothing (test_reserve.ReserveTests.test_insufficient_stock_changes_nothing) ... ok
+test_invalid_quantities_and_missing_seed (test_reserve.ReserveTests.test_invalid_quantities_and_missing_seed) ... ok
+test_reserve_decrements_stock_and_records_reservation (test_reserve.ReserveTests.test_reserve_decrements_stock_and_records_reservation) ... ok
+test_reserve_exact_remaining_stock (test_reserve.ReserveTests.test_reserve_exact_remaining_stock) ... ok
+
+======================================================================
+ERROR: test_cancel_restores_stock_and_sets_time (test_cancel.CancelTests.test_cancel_restores_stock_and_sets_time)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_cancel.py", line 21, in test_cancel_restores_stock_and_sets_time
+    result = self.stock.cancel("r1")
+             ^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'cancel'
+
+======================================================================
+ERROR: test_double_cancel_never_restores_stock_twice (test_cancel.CancelTests.test_double_cancel_never_restores_stock_twice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_cancel.py", line 27, in test_double_cancel_never_restores_stock_twice
+    self.stock.cancel("r1")
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'cancel'
+
+======================================================================
+ERROR: test_migrations_and_rows_survive_reopening_database (test_cancel.CancelTests.test_migrations_and_rows_survive_reopening_database)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_cancel.py", line 48, in test_migrations_and_rows_survive_reopening_database
+    stock.cancel("reservation")
+    ^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'cancel'
+
+======================================================================
+ERROR: test_missing_reservation_changes_nothing (test_cancel.CancelTests.test_missing_reservation_changes_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/DemonessMari/Documents/Codex/2026-11-16/check-kriit-and-continue-with-tasks/seed-stock/tests/test_cancel.py", line 32, in test_missing_reservation_changes_nothing
+    with self.assertRaises(ValueError): self.stock.cancel("missing")
+                                        ^^^^^^^^^^^^^^^^^
+AttributeError: 'StockService' object has no attribute 'cancel'
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.185s
+
+FAILED (errors=4)
