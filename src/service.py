@@ -11,8 +11,10 @@ def seed_data(seed):
 
 
 def reservation_data(reservation):
-    return {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
+    data = {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
             "status": reservation.status, "createdAt": reservation.created_at}
+    if reservation.cancelled_at is not None: data["cancelledAt"] = reservation.cancelled_at
+    return data
 
 
 def validate_quantity(quantity, positive=False):
@@ -62,3 +64,15 @@ class StockService:
         with Session(self.engine) as session:
             return [reservation_data(r)
                     for r in session.scalars(select(Reservation).order_by(Reservation.created_at, Reservation.id))]
+
+    def cancel(self, reservation_id):
+        with Session(self.engine, expire_on_commit=False) as session, session.begin():
+            reservation = session.get(Reservation, reservation_id)
+            if reservation is None: raise ValueError("Broneeringut ei leitud.")
+            now = self.clock()
+            result = session.execute(update(Reservation).where(Reservation.id == reservation_id, Reservation.status == "active")
+                                     .values(status="cancelled", cancelled_at=now))
+            if result.rowcount != 1: raise ValueError("Broneering on juba tühistatud.")
+            session.execute(update(Seed).where(Seed.id == reservation.seed_id).values(quantity=Seed.quantity + reservation.quantity))
+            session.refresh(reservation)
+        return reservation_data(reservation)
