@@ -10,6 +10,11 @@ def seed_data(seed):
     return {"id": seed.id, "name": seed.name, "quantity": seed.quantity, "createdAt": seed.created_at}
 
 
+def reservation_data(reservation):
+    return {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
+            "status": reservation.status, "createdAt": reservation.created_at}
+
+
 def validate_quantity(quantity, positive=False):
     if type(quantity) is not int or quantity < (1 if positive else 0):
         raise ValueError("Kogus peab olema " + ("positiivne" if positive else "mittenegatiivne") + " täisarv.")
@@ -51,10 +56,9 @@ class StockService:
                 session.flush()
         except IntegrityError as error:
             raise ValueError("Broneeringu salvestamine ebaõnnestus.") from error
-        return {"id": reservation.id, "seedId": reservation.seed_id, "quantity": reservation.quantity,
-                "status": reservation.status, "createdAt": reservation.created_at}
+        return reservation_data(reservation)
 
     def list_reservations(self):
         with Session(self.engine) as session:
-            return [{"id": r.id, "seedId": r.seed_id, "quantity": r.quantity, "status": r.status, "createdAt": r.created_at}
+            return [reservation_data(r)
                     for r in session.scalars(select(Reservation).order_by(Reservation.created_at, Reservation.id))]
