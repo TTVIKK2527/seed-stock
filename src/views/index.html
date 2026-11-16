@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="et"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seemnevaru</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><main><header><p>Aianduse töölaud</p><h1>Seemnevaru</h1><p>Lisa seemneid ja hoia külviks tehtud broneeringud ühes kohas.</p></header>
+{% if error %}<p role="alert" class="error">{{ error }}</p>{% endif %}
+<section aria-labelledby="varu"><h2 id="varu">Saadaval seemned</h2>
+<table><thead><tr><th scope="col">Nimetus</th><th scope="col">Saadaval</th><th scope="col">Broneeri külviks</th></tr></thead><tbody>
+{% for seed in seeds %}<tr><td>{{ seed.name }}</td><td>{{ seed.quantity }}</td><td>
+<form method="post" action="{{ url_for('pages.reserve') }}"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="seedId" value="{{ seed.id }}">
+<label>Kogus <input name="quantity" type="number" min="1" max="{{ seed.quantity }}" required aria-label="Broneeri {{ seed.name }} kogus"></label><button>Broneeri</button></form>
+</td></tr>{% else %}<tr><td colspan="3">Seemneid pole veel lisatud.</td></tr>{% endfor %}
+</tbody></table></section>
+<section aria-labelledby="lisa"><h2 id="lisa">Lisa uus seemnesort</h2><form method="post" action="{{ url_for('pages.add') }}">
+<input type="hidden" name="csrf" value="{{ csrf }}"><label>Nimetus <input name="name" required maxlength="150"></label>
+<label>Kogus <input type="number" name="quantity" min="0" required></label><button>Lisa seemned</button></form></section>
+<section aria-labelledby="broneeringud"><h2 id="broneeringud">Broneeringud</h2><ul>
+{% for reservation in reservations %}<li><strong>{{ reservation.quantity }} seemet</strong> · {{ reservation.seedId }} · {{ reservation.status }}
+{% if reservation.status == 'active' %}<form method="post" action="{{ url_for('pages.cancel', reservation_id=reservation.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Tühista broneering</button></form>{% endif %}</li>
+{% else %}<li>Ühtegi broneeringut veel pole.</li>{% endfor %}</ul></section>
+</main></body></html>
