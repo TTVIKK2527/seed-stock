@@ -73,10 +73,11 @@ migratsioonide idempotentsus, FK/CHECK piirangud ja rollback on samuti testitud.
 
 make test: 20 testi PASS. Flaski testiklient kontrollib HTTP-kontrollerit, Jinja
 HTML-renderdust, CSRF tõrjet, vigast sisendit ja lisamise/broneerimise/tühistamise
-tervikvoogu ilma socket'ita. Kohaliku veebiserveri tegelik käivitus ja brauseripilt
-jäid kontrollimata, sest selle sessiooni sandbox keelab socket'id.
+tervikvoogu ilma socket'ita. Jätkutöös käivitati päris kohalik veebiserver ja kontrolliti brauseris lisamist,
+broneerimist (20 → 14), tühistamist (14 → 20) ning lehe uuendamist.
+Ekraanipilt: [brauserikontroll](evidence/browser.jpg).
 
-.github/workflows/tests.yml käivitab samad testid pushi/PR-i korral. Kohalikult
-olemas olev workflow pole tõend GitHub Actionsi edukast jooksust. Katvuse >=70%
-soovitust eraldi pole mõõdetud. Kood, testid ja migratsioonid on valmis; GitHubi
-avaldamine ning individuaalne kaitsmine pole sellega automaatselt tehtud.
+.github/workflows/tests.yml käivitab samad testid pushi/PR-i korral. Avaldatud repositoorium: https://github.com/TTVIKK2527/seed-stock.
+GitHub Actionsi jooksu tulemus on nähtav repositooriumi Actions vaates. Katvuse >=70%
+soovitust eraldi pole mõõdetud. Kood, testid ja migratsioonid on avaldatud koos tegelike feature-harudega.
+Individuaalne kaitsmine jääb õppijale.
